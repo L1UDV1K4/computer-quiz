@@ -34,7 +34,9 @@
             *ngFor="let answer of currQuestion().shuffled_answers"
             [disabled]="!!currQuestion().selected_answer"
             [class.selected]="currQuestion().selected_answer === answer"
-            [class.correct]="currQuestion().selected_answer && answer === currQuestion().correct_answer"
+            [class.correct]="
+              currQuestion().selected_answer && answer === currQuestion().correct_answer
+            "
             [class.wrong]="
               currQuestion().selected_answer === answer && answer !== currQuestion().correct_answer
             "

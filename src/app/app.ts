@@ -32,14 +32,16 @@ export class App {
     this.triviaService.retrieveQuestions().subscribe({
       next: (data) => {
         const mapped = data.results.map((q) => {
-          const answers = this.shuffle(q.correct_answer, q.incorrect_answers);
+          const decodedCorrect = this.decodeHtml(q.correct_answer);
+          const decodedIncorrect = q.incorrect_answers.map((a) => this.decodeHtml(a));
+          const answers = this.shuffle(decodedCorrect, decodedIncorrect);
           return {
             type: q.type,
             difficulty: q.difficulty,
-            category: q.category,
-            question: q.question,
-            correct_answer: q.correct_answer,
-            incorrect_answers: q.incorrect_answers,
+            category: this.decodeHtml(q.category),
+            question: this.decodeHtml(q.question),
+            correct_answer: decodedCorrect,
+            incorrect_answers: decodedIncorrect,
             shuffled_answers: answers,
           };
         });
@@ -52,7 +54,11 @@ export class App {
       },
     });
   }
-
+  private decodeHtml(text: string): string {
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = text;
+    return textarea.value;
+  }
   private shuffle(correct: string, incorrect: string[]): string[] {
     const combined = incorrect.concat(correct);
 
